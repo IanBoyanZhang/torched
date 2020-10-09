@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
-project(example-app)
+project(LeNet5_example)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
@@ -10,18 +10,7 @@ if(DOWNLOAD_DATASETS)
     include(download_mnist)
 endif()
 
-add_executable(example-app example-app.cpp convnet.cpp)
-target_link_libraries(example-app "${TORCH_LIBRARIES}")
-set_property(TARGET example-app PROPERTY CXX_STANDARD 14)
+add_executable(LeNet5_example training_loop.cpp convnet.cpp)
+target_link_libraries(LeNet5_example "${TORCH_LIBRARIES}")
+set_property(TARGET LeNet5_example PROPERTY CXX_STANDARD 14)
 
-# The following code block is suggested to be used on Windows.
-# According to https://github.com/pytorch/pytorch/issues/25457,
-# the DLLs need to be copied to avoid memory errors.
-if (MSVC)
-  file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
-  add_custom_command(TARGET example-app
-                     POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                     ${TORCH_DLLS}
-                     $<TARGET_FILE_DIR:example-app>)
-endif (MSVC)
